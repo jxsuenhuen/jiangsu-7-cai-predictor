@@ -1,47 +1,102 @@
 name: Update Jiangsu 7 Lottery
 
+
 on:
+
   schedule:
+
     - cron: "0 14 * * *"
+
 
   workflow_dispatch:
 
 
+
 permissions:
+
   contents: write
 
 
+
 jobs:
+
   update:
+
 
     runs-on: ubuntu-latest
 
+
     steps:
 
+
       - name: Checkout
+
         uses: actions/checkout@v4
 
 
+
       - name: Install Python
+
         uses: actions/setup-python@v5
+
         with:
+
           python-version: "3.x"
 
 
+
       - name: Update lottery data
+
         run: |
+
           python update_history.py
 
 
-      - name: Commit update
+
+      # 检查生成结果
+
+      - name: Check history.csv
+
         run: |
+
+          echo "检查 history.csv"
+
+          wc -l history.csv
+
+          echo "前5行"
+
+          head -5 history.csv
+
+          echo "后5行"
+
+          tail -5 history.csv
+
+
+
+      # 提交更新
+
+      - name: Commit update
+
+
+        run: |
+
+
           git config --global user.name "github-actions"
+
           git config --global user.email "github-actions@github.com"
+
+
 
           git add history.csv
 
-          git diff --quiet && exit 0
 
-          git commit -m "auto update lottery data"
+
+          git status
+
+
+
+          git commit -m "auto update lottery data" || echo "没有变化"
+
+
 
           git push
