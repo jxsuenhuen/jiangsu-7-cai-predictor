@@ -64,7 +64,7 @@ def main():
     rows=read_rows()
 
     if len(rows)<4748:
-        rows=fallback_full()
+       rows=fallback_full()
         print('Seeded full history from fallback source.')
 
     # 使用备用接口获取最新数据
