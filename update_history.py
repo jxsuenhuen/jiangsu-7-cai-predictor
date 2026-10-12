@@ -95,7 +95,364 @@ def parse_page(html):
 
 
 
-def get_all_history():
+def def def def def get_all_history():      import json     import urllib.parse       url = (         "https://api.huiniao.top/interface/home/lotteryHistory?"         + urllib.parse.urlencode(             {                 "type":"jsqws",                 "page":1,                 "limit":500             }         )     )       req = urllib.request.Request(         url,         headers={             "User-Agent":"Mozilla/5.0"         }     )       with urllib.request.urlopen(         req,         timeout=30     ) as r:          obj=json.loads(             r.read().decode(                 "utf-8-sig"             )         )       rows=[]       total_page=obj["data"]["data"]["totalPage"]       for page in range(         1,         int(total_page)+1     ):           url = (             "https://api.huiniao.top/interface/home/lotteryHistory?"             + urllib.parse.urlencode(                 {                     "type":"jsqws",                     "page":page,                     "limit":500                 }             )         )           req=urllib.request.Request(             url,             headers={                 "User-Agent":"Mozilla/5.0"             }         )           with urllib.request.urlopen(             req,             timeout=30         ) as r:              data=json.loads(                 r.read().decode(                     "utf-8-sig"                 )             )           for x in data["data"]["data"]["list"]:              issue=str(x["code"])               nums=[                 x["one"],                 x["two"],                 x["three"],                 x["four"],                 x["five"],                 x["six"],                 x["seven"]             ]               rows.append(                 [                     issue,                     x["day"],                     *map(int,nums)                 ]             )       rows.sort(         key=lambda x:int(x[0])     )       print(         "抓取历史:",         len(rows),         "期"     )       return rows:
+
+    import json
+    import urllib.parse
+
+
+    url = (
+        "https://api.huiniao.top/interface/home/lotteryHistory?"
+        + urllib.parse.urlencode(
+            {
+                "type":"jsqws",
+                "page":1,
+                "limit":500
+            }
+        )
+    )
+
+
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent":"Mozilla/5.0"
+        }
+    )
+
+
+    with urllib.request.urlopen(
+        req,
+        timeout=30
+    ) as r:
+
+        obj=json.loads(
+            r.read().decode(
+                "utf-8-sig"
+            )
+        )
+
+
+    rows=[]
+
+
+    total_page=obj["data"]["data"]["totalPage"]
+
+
+    for page in range(
+        1,
+        int(total_page)+1
+    ):
+
+
+        url = (
+            "https://api.huiniao.top/interface/home/lotteryHistory?"
+            + urllib.parse.urlencode(
+                {
+                    "type":"jsqws",
+                    "page":page,
+                    "limit":500
+                }
+            )
+        )
+
+
+        req=urllib.request.Request(
+            url,
+            headers={
+                "User-Agent":"Mozilla/5.0"
+            }
+        )
+
+
+        with urllib.request.urlopen(
+            req,
+            timeout=30
+        ) as r:
+
+            data=json.loads(
+                r.read().decode(
+                    "utf-8-sig"
+                )
+            )
+
+
+        for x in data["data"]["data"]["list"]:
+
+            issue=str(x["code"])
+
+
+            nums=[
+                x["one"],
+                x["two"],
+                x["three"],
+                x["four"],
+                x["five"],
+                x["six"],
+                x["seven"]
+            ]
+
+
+            rows.append(
+                [
+                    issue,
+                    x["day"],
+                    *map(int,nums)
+                ]
+            )
+
+
+    rows.sort(
+        key=lambda x:int(x[0])
+    )
+
+
+    print(
+        "抓取历史:",
+        len(rows),
+        "期"
+    )
+
+
+    return rows:
+
+    import json
+    import urllib.parse
+
+
+    url = (
+        "https://api.huiniao.top/interface/home/lotteryHistory?"
+        + urllib.parse.urlencode(
+            {
+                "type":"jsqws",
+                "page":1,
+                "limit":500
+            }
+        )
+    )
+
+
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent":"Mozilla/5.0"
+        }
+    )
+
+
+    with urllib.request.urlopen(
+        req,
+        timeout=30
+    ) as r:
+
+        obj=json.loads(
+            r.read().decode(
+                "utf-8-sig"
+            )
+        )
+
+
+    rows=[]
+
+
+    total_page=obj["data"]["data"]["totalPage"]
+
+
+    for page in range(
+        1,
+        int(total_page)+1
+    ):
+
+
+        url = (
+            "https://api.huiniao.top/interface/home/lotteryHistory?"
+            + urllib.parse.urlencode(
+                {
+                    "type":"jsqws",
+                    "page":page,
+                    "limit":500
+                }
+            )
+        )
+
+
+        req=urllib.request.Request(
+            url,
+            headers={
+                "User-Agent":"Mozilla/5.0"
+            }
+        )
+
+
+        with urllib.request.urlopen(
+            req,
+            timeout=30
+        ) as r:
+
+            data=json.loads(
+                r.read().decode(
+                    "utf-8-sig"
+                )
+            )
+
+
+        for x in data["data"]["data"]["list"]:
+
+            issue=str(x["code"])
+
+
+            nums=[
+                x["one"],
+                x["two"],
+                x["three"],
+                x["four"],
+                x["five"],
+                x["six"],
+                x["seven"]
+            ]
+
+
+            rows.append(
+                [
+                    issue,
+                    x["day"],
+                    *map(int,nums)
+                ]
+            )
+
+
+    rows.sort(
+        key=lambda x:int(x[0])
+    )
+
+
+    print(
+        "抓取历史:",
+        len(rows),
+        "期"
+    )
+
+
+    return rows:
+
+    import json
+    import urllib.parse
+
+
+    url = (
+        "https://api.huiniao.top/interface/home/lotteryHistory?"
+        + urllib.parse.urlencode(
+            {
+                "type":"jsqws",
+                "page":1,
+                "limit":500
+            }
+        )
+    )
+
+
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent":"Mozilla/5.0"
+        }
+    )
+
+
+    with urllib.request.urlopen(
+        req,
+        timeout=30
+    ) as r:
+
+        obj=json.loads(
+            r.read().decode(
+                "utf-8-sig"
+            )
+        )
+
+
+    rows=[]
+
+
+    total_page=obj["data"]["data"]["totalPage"]
+
+
+    for page in range(
+        1,
+        int(total_page)+1
+    ):
+
+
+        url = (
+            "https://api.huiniao.top/interface/home/lotteryHistory?"
+            + urllib.parse.urlencode(
+                {
+                    "type":"jsqws",
+                    "page":page,
+                    "limit":500
+                }
+            )
+        )
+
+
+        req=urllib.request.Request(
+            url,
+            headers={
+                "User-Agent":"Mozilla/5.0"
+            }
+        )
+
+
+        with urllib.request.urlopen(
+            req,
+            timeout=30
+        ) as r:
+
+            data=json.loads(
+                r.read().decode(
+                    "utf-8-sig"
+                )
+            )
+
+
+        for x in data["data"]["data"]["list"]:
+
+            issue=str(x["code"])
+
+
+            nums=[
+                x["one"],
+                x["two"],
+                x["three"],
+                x["four"],
+                x["five"],
+                x["six"],
+                x["seven"]
+            ]
+
+
+            rows.append(
+                [
+                    issue,
+                    x["day"],
+                    *map(int,nums)
+                ]
+            )
+
+
+    rows.sort(
+        key=lambda x:int(x[0])
+    )
+
+
+    print(
+        "抓取历史:",
+        len(rows),
+        "期"
+    )
+
+
+    return rows:
 
     print(
         "开始抓取历史数据..."
@@ -123,7 +480,245 @@ def get_all_history():
 
 def get_latest():
 
-    rows = get_all_history()
+    rows = def def def get_all_history():      import json     import urllib.parse       url = (         "https://api.huiniao.top/interface/home/lotteryHistory?"         + urllib.parse.urlencode(             {                 "type":"jsqws",                 "page":1,                 "limit":500             }         )     )       req = urllib.request.Request(         url,         headers={             "User-Agent":"Mozilla/5.0"         }     )       with urllib.request.urlopen(         req,         timeout=30     ) as r:          obj=json.loads(             r.read().decode(                 "utf-8-sig"             )         )       rows=[]       total_page=obj["data"]["data"]["totalPage"]       for page in range(         1,         int(total_page)+1     ):           url = (             "https://api.huiniao.top/interface/home/lotteryHistory?"             + urllib.parse.urlencode(                 {                     "type":"jsqws",                     "page":page,                     "limit":500                 }             )         )           req=urllib.request.Request(             url,             headers={                 "User-Agent":"Mozilla/5.0"             }         )           with urllib.request.urlopen(             req,             timeout=30         ) as r:              data=json.loads(                 r.read().decode(                     "utf-8-sig"                 )             )           for x in data["data"]["data"]["list"]:              issue=str(x["code"])               nums=[                 x["one"],                 x["two"],                 x["three"],                 x["four"],                 x["five"],                 x["six"],                 x["seven"]             ]               rows.append(                 [                     issue,                     x["day"],                     *map(int,nums)                 ]             )       rows.sort(         key=lambda x:int(x[0])     )       print(         "抓取历史:",         len(rows),         "期"     )       return rows:
+
+    import json
+    import urllib.parse
+
+
+    url = (
+        "https://api.huiniao.top/interface/home/lotteryHistory?"
+        + urllib.parse.urlencode(
+            {
+                "type":"jsqws",
+                "page":1,
+                "limit":500
+            }
+        )
+    )
+
+
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent":"Mozilla/5.0"
+        }
+    )
+
+
+    with urllib.request.urlopen(
+        req,
+        timeout=30
+    ) as r:
+
+        obj=json.loads(
+            r.read().decode(
+                "utf-8-sig"
+            )
+        )
+
+
+    rows=[]
+
+
+    total_page=obj["data"]["data"]["totalPage"]
+
+
+    for page in range(
+        1,
+        int(total_page)+1
+    ):
+
+
+        url = (
+            "https://api.huiniao.top/interface/home/lotteryHistory?"
+            + urllib.parse.urlencode(
+                {
+                    "type":"jsqws",
+                    "page":page,
+                    "limit":500
+                }
+            )
+        )
+
+
+        req=urllib.request.Request(
+            url,
+            headers={
+                "User-Agent":"Mozilla/5.0"
+            }
+        )
+
+
+        with urllib.request.urlopen(
+            req,
+            timeout=30
+        ) as r:
+
+            data=json.loads(
+                r.read().decode(
+                    "utf-8-sig"
+                )
+            )
+
+
+        for x in data["data"]["data"]["list"]:
+
+            issue=str(x["code"])
+
+
+            nums=[
+                x["one"],
+                x["two"],
+                x["three"],
+                x["four"],
+                x["five"],
+                x["six"],
+                x["seven"]
+            ]
+
+
+            rows.append(
+                [
+                    issue,
+                    x["day"],
+                    *map(int,nums)
+                ]
+            )
+
+
+    rows.sort(
+        key=lambda x:int(x[0])
+    )
+
+
+    print(
+        "抓取历史:",
+        len(rows),
+        "期"
+    )
+
+
+    return rows:
+
+    import json
+    import urllib.parse
+
+
+    url = (
+        "https://api.huiniao.top/interface/home/lotteryHistory?"
+        + urllib.parse.urlencode(
+            {
+                "type":"jsqws",
+                "page":1,
+                "limit":500
+            }
+        )
+    )
+
+
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent":"Mozilla/5.0"
+        }
+    )
+
+
+    with urllib.request.urlopen(
+        req,
+        timeout=30
+    ) as r:
+
+        obj=json.loads(
+            r.read().decode(
+                "utf-8-sig"
+            )
+        )
+
+
+    rows=[]
+
+
+    total_page=obj["data"]["data"]["totalPage"]
+
+
+    for page in range(
+        1,
+        int(total_page)+1
+    ):
+
+
+        url = (
+            "https://api.huiniao.top/interface/home/lotteryHistory?"
+            + urllib.parse.urlencode(
+                {
+                    "type":"jsqws",
+                    "page":page,
+                    "limit":500
+                }
+            )
+        )
+
+
+        req=urllib.request.Request(
+            url,
+            headers={
+                "User-Agent":"Mozilla/5.0"
+            }
+        )
+
+
+        with urllib.request.urlopen(
+            req,
+            timeout=30
+        ) as r:
+
+            data=json.loads(
+                r.read().decode(
+                    "utf-8-sig"
+                )
+            )
+
+
+        for x in data["data"]["data"]["list"]:
+
+            issue=str(x["code"])
+
+
+            nums=[
+                x["one"],
+                x["two"],
+                x["three"],
+                x["four"],
+                x["five"],
+                x["six"],
+                x["seven"]
+            ]
+
+
+            rows.append(
+                [
+                    issue,
+                    x["day"],
+                    *map(int,nums)
+                ]
+            )
+
+
+    rows.sort(
+        key=lambda x:int(x[0])
+    )
+
+
+    print(
+        "抓取历史:",
+        len(rows),
+        "期"
+    )
+
+
+    return rows
 
     rows.sort(
         key=lambda x:int(x[0])
@@ -210,7 +805,245 @@ def main():
         )
 
 
-        rows=get_all_history()
+        rows=def def def get_all_history():      import json     import urllib.parse       url = (         "https://api.huiniao.top/interface/home/lotteryHistory?"         + urllib.parse.urlencode(             {                 "type":"jsqws",                 "page":1,                 "limit":500             }         )     )       req = urllib.request.Request(         url,         headers={             "User-Agent":"Mozilla/5.0"         }     )       with urllib.request.urlopen(         req,         timeout=30     ) as r:          obj=json.loads(             r.read().decode(                 "utf-8-sig"             )         )       rows=[]       total_page=obj["data"]["data"]["totalPage"]       for page in range(         1,         int(total_page)+1     ):           url = (             "https://api.huiniao.top/interface/home/lotteryHistory?"             + urllib.parse.urlencode(                 {                     "type":"jsqws",                     "page":page,                     "limit":500                 }             )         )           req=urllib.request.Request(             url,             headers={                 "User-Agent":"Mozilla/5.0"             }         )           with urllib.request.urlopen(             req,             timeout=30         ) as r:              data=json.loads(                 r.read().decode(                     "utf-8-sig"                 )             )           for x in data["data"]["data"]["list"]:              issue=str(x["code"])               nums=[                 x["one"],                 x["two"],                 x["three"],                 x["four"],                 x["five"],                 x["six"],                 x["seven"]             ]               rows.append(                 [                     issue,                     x["day"],                     *map(int,nums)                 ]             )       rows.sort(         key=lambda x:int(x[0])     )       print(         "抓取历史:",         len(rows),         "期"     )       return rows:
+
+    import json
+    import urllib.parse
+
+
+    url = (
+        "https://api.huiniao.top/interface/home/lotteryHistory?"
+        + urllib.parse.urlencode(
+            {
+                "type":"jsqws",
+                "page":1,
+                "limit":500
+            }
+        )
+    )
+
+
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent":"Mozilla/5.0"
+        }
+    )
+
+
+    with urllib.request.urlopen(
+        req,
+        timeout=30
+    ) as r:
+
+        obj=json.loads(
+            r.read().decode(
+                "utf-8-sig"
+            )
+        )
+
+
+    rows=[]
+
+
+    total_page=obj["data"]["data"]["totalPage"]
+
+
+    for page in range(
+        1,
+        int(total_page)+1
+    ):
+
+
+        url = (
+            "https://api.huiniao.top/interface/home/lotteryHistory?"
+            + urllib.parse.urlencode(
+                {
+                    "type":"jsqws",
+                    "page":page,
+                    "limit":500
+                }
+            )
+        )
+
+
+        req=urllib.request.Request(
+            url,
+            headers={
+                "User-Agent":"Mozilla/5.0"
+            }
+        )
+
+
+        with urllib.request.urlopen(
+            req,
+            timeout=30
+        ) as r:
+
+            data=json.loads(
+                r.read().decode(
+                    "utf-8-sig"
+                )
+            )
+
+
+        for x in data["data"]["data"]["list"]:
+
+            issue=str(x["code"])
+
+
+            nums=[
+                x["one"],
+                x["two"],
+                x["three"],
+                x["four"],
+                x["five"],
+                x["six"],
+                x["seven"]
+            ]
+
+
+            rows.append(
+                [
+                    issue,
+                    x["day"],
+                    *map(int,nums)
+                ]
+            )
+
+
+    rows.sort(
+        key=lambda x:int(x[0])
+    )
+
+
+    print(
+        "抓取历史:",
+        len(rows),
+        "期"
+    )
+
+
+    return rows:
+
+    import json
+    import urllib.parse
+
+
+    url = (
+        "https://api.huiniao.top/interface/home/lotteryHistory?"
+        + urllib.parse.urlencode(
+            {
+                "type":"jsqws",
+                "page":1,
+                "limit":500
+            }
+        )
+    )
+
+
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent":"Mozilla/5.0"
+        }
+    )
+
+
+    with urllib.request.urlopen(
+        req,
+        timeout=30
+    ) as r:
+
+        obj=json.loads(
+            r.read().decode(
+                "utf-8-sig"
+            )
+        )
+
+
+    rows=[]
+
+
+    total_page=obj["data"]["data"]["totalPage"]
+
+
+    for page in range(
+        1,
+        int(total_page)+1
+    ):
+
+
+        url = (
+            "https://api.huiniao.top/interface/home/lotteryHistory?"
+            + urllib.parse.urlencode(
+                {
+                    "type":"jsqws",
+                    "page":page,
+                    "limit":500
+                }
+            )
+        )
+
+
+        req=urllib.request.Request(
+            url,
+            headers={
+                "User-Agent":"Mozilla/5.0"
+            }
+        )
+
+
+        with urllib.request.urlopen(
+            req,
+            timeout=30
+        ) as r:
+
+            data=json.loads(
+                r.read().decode(
+                    "utf-8-sig"
+                )
+            )
+
+
+        for x in data["data"]["data"]["list"]:
+
+            issue=str(x["code"])
+
+
+            nums=[
+                x["one"],
+                x["two"],
+                x["three"],
+                x["four"],
+                x["five"],
+                x["six"],
+                x["seven"]
+            ]
+
+
+            rows.append(
+                [
+                    issue,
+                    x["day"],
+                    *map(int,nums)
+                ]
+            )
+
+
+    rows.sort(
+        key=lambda x:int(x[0])
+    )
+
+
+    print(
+        "抓取历史:",
+        len(rows),
+        "期"
+    )
+
+
+    return rows
 
 
     else:
