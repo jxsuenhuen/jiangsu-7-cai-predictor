@@ -1,0 +1,13 @@
+江苏7位号码预测器 V9
+
+当前已知最新开奖：26152 / 2026-10-06 / 1951937
+下一期：26153；预计开奖：2026-10-08。
+
+安装：
+1. 将本目录文件上传到 GitHub 仓库 jxsuenhuen/lottery-predictor 的 main 分支。
+2. GitHub Actions 中运行 Update Jiangsu 7-digit history（可先手动 Run workflow）。
+3. 等更新工作流成功后，history.csv 会恢复完整历史数据（目标至少4748条）。
+4. Pages 选择 GitHub Actions，运行 Deploy V9 to GitHub Pages。
+5. 网站：https://jxsuenhuen.github.io/lottery-predictor/
+
+注意：history.csv 随包仅放置26152作为安全启动数据；第一次运行自动更新工作流会从历史数据源重新生成完整4748期以上数据，避免手工复制大文件。
