@@ -42,17 +42,35 @@ def fallback_full():
     for pg in range(1,pages+1):
         obj=first if pg==1 else get(pg)
         for x in obj.get('data',{}).get('data',{}).get('list',[]):
-            code=str(x.get('code','')); day=str(x.get('day',''))
-            nums=[x.get(k) for k in ('one','two','three','four','five','six','seven')]
-            if re.fullmatch(r'\d{5}',code) and re.fullmatch(r'\d{4}-\d{2}-\d{2}',day) and all(v is not None and str(v).isdigit() and 0<=int(v)<=9 for v in nums): rows.append([code,day,*map(int,nums)])
-    rows.sort(key=lambda r:int(r[0]))
-    if len(rows)==0:
-    raise RuntimeError('备用数据源没有返回有效数据')
-    return rows[-4748:]
+            def fallback_full():
+    def get(page):
+        url=FALLBACK+'?'+urllib.parse.urlencode({'type':'jsqws','page':page,'limit':LIMIT})
+        req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0'})
+        with urllib.request.urlopen(req,timeout=30) as r:
+            return json.loads(r.read().decode('utf-8-sig','replace'))
 
-def read_rows():
-    if not os.path.exists(OUT): return []
-    with open(OUT,encoding='utf-8-sig',newline='') as f: return [[r['issue'],r['date'],*map(int,[r[f'd{i}'] for i in range(1,8)])] for r in csv.DictReader(f) if re.fullmatch(r'\d{5}',r.get('issue',''))]
+    first=get(1)
+    root=first['data']['data']
+    pages=int(root['totalPage'])
+    rows=[]
+
+    for pg in range(1,pages+1):
+        obj=first if pg==1 else get(pg)
+        for x in obj.get('data',{}).get('data',{}).get('list',[]):
+            code=str(x.get('code',''))
+            day=str(x.get('day',''))
+            nums=[x.get(k) for k in ('one','two','three','four','five','six','seven')]
+
+            if re.fullmatch(r'\d{5}',code) and re.fullmatch(r'\d{4}-\d{2}-\d{2}',day):
+                if all(v is not None and str(v).isdigit() and 0<=int(v)<=9 for v in nums):
+                    rows.append([code,day,*map(int,nums)])
+
+    rows.sort(key=lambda r:int(r[0]))
+
+    if len(rows)==0:
+        raise RuntimeError('备用数据源没有返回有效数据')
+
+    return rows
 
 def write(rows):
     rows=sorted({r[0]:r for r in rows}.values(),key=lambda r:int(r[0]))
