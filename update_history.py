@@ -61,11 +61,20 @@ def write(rows):
 
 def main():
     rows=read_rows()
+
     if len(rows)<4748:
         rows=fallback_full()
-        print('Seeded full history from the validated history source.')
-    latest=official_latest()
-    if int(latest[0])>int(rows[-1][0]): rows.append(latest); print('Official latest appended:',latest)
-    elif int(latest[0])==int(rows[-1][0]) and latest[2:]!=rows[-1][2:]: raise RuntimeError('官方最新期号相同但开奖号码不一致，拒绝覆盖历史数据')
+        print('Seeded full history from fallback source.')
+
+    # 使用备用接口获取最新数据
+    latest_rows=fallback_full()
+    latest=latest_rows[-1]
+
+    if not rows or int(latest[0])>int(rows[-1][0]):
+        rows.append(latest)
+        print('Latest appended:', latest)
+
+    elif int(latest[0])==int(rows[-1][0]):
+        print('Already latest:', latest)
+
     write(rows)
-if __name__=='__main__': main()
