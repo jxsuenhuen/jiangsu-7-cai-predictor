@@ -31,7 +31,55 @@ def fetch(url):
     with urllib.request.urlopen(req, timeout=30) as r:
         return r.read().decode("utf-8", "ignore")
 
+def get_history():
 
+    url = "https://api.huiniao.top/interface/home/lotteryHistory"
+
+    req = urllib.request.Request(
+        url + "?type=jsqws&page=1&limit=500",
+        headers={
+            "User-Agent":"Mozilla/5.0"
+        }
+    )
+
+    import json
+
+    with urllib.request.urlopen(req,timeout=30) as r:
+        obj=json.loads(
+            r.read().decode("utf-8-sig")
+        )
+
+    rows=[]
+
+    data=obj["data"]["data"]["list"]
+
+    for x in data:
+
+        issue=str(x.get("code",""))
+
+        nums=[
+            x.get("one"),
+            x.get("two"),
+            x.get("three"),
+            x.get("four"),
+            x.get("five"),
+            x.get("six"),
+            x.get("seven")
+        ]
+
+        date=x.get("day","")
+
+        if (
+            re.fullmatch(r"\d{5}",issue)
+            and len(nums)==7
+        ):
+            rows.append([
+                issue,
+                date,
+                *nums
+            ])
+
+    return rows
 def get_latest():
 
     html = fetch(URL)
@@ -126,7 +174,23 @@ def main():
 
     rows = read_history()
 
-    latest = get_latest()
+
+# 第一次运行，初始化历史
+if len(rows)<100:
+
+    print("开始下载历史数据")
+
+    rows=get_history()
+
+    print(
+        "历史数量:",
+        len(rows)
+    )
+
+
+latest=get_latest()
+
+     
 
     exists = False
 
