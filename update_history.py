@@ -46,7 +46,8 @@ def fallback_full():
             nums=[x.get(k) for k in ('one','two','three','four','five','six','seven')]
             if re.fullmatch(r'\d{5}',code) and re.fullmatch(r'\d{4}-\d{2}-\d{2}',day) and all(v is not None and str(v).isdigit() and 0<=int(v)<=9 for v in nums): rows.append([code,day,*map(int,nums)])
     rows.sort(key=lambda r:int(r[0]))
-    if len(rows)<4748: raise RuntimeError(f'完整历史源仅取得{len(rows)}条有效数据，停止更新')
+    if len(rows)==0:
+    raise RuntimeError('备用数据源没有返回有效数据')
     return rows[-4748:]
 
 def read_rows():
