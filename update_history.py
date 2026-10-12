@@ -34,41 +34,65 @@ def official_latest():
     return rows[-1]
 
 def fallback_full():
-    def get(page):
-        url=FALLBACK+'?'+urllib.parse.urlencode({'type':'jsqws','page':page,'limit':LIMIT})
-        req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0'})
-        with urllib.request.urlopen(req,timeout=30) as r: return json.loads(r.read().decode('utf-8-sig','replace'))
-    first=get(1); root=first['data']['data']; pages=int(root['totalPage']); rows=[]
-    for pg in range(1,pages+1):
-        obj=first if pg==1 else get(pg)
-        for x in obj.get('data',{}).get('data',{}).get('list',[]):
-            def fallback_full():
-    def get(page):
-        url=FALLBACK+'?'+urllib.parse.urlencode({'type':'jsqws','page':page,'limit':LIMIT})
-        req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0'})
-        with urllib.request.urlopen(req,timeout=30) as r:
-            return json.loads(r.read().decode('utf-8-sig','replace'))
+    url = FALLBACK + '?' + urllib.parse.urlencode({
+        'type': 'jsqws',
+        'page': 1,
+        'limit': LIMIT
+    })
 
-    first=get(1)
-    root=first['data']['data']
-    pages=int(root['totalPage'])
+    req = urllib.request.Request(
+        url,
+        headers={'User-Agent':'Mozilla/5.0'}
+    )
+
+    with urllib.request.urlopen(req, timeout=30) as r:
+        obj = json.loads(r.read().decode('utf-8-sig','replace'))
+
     rows=[]
 
-    for pg in range(1,pages+1):
-        obj=first if pg==1 else get(pg)
-        for x in obj.get('data',{}).get('data',{}).get('list',[]):
-            code=str(x.get('code',''))
-            day=str(x.get('day',''))
-            nums=[x.get(k) for k in ('one','two','three','four','five','six','seven')]
+    data = obj.get('data',{})
 
-            if re.fullmatch(r'\d{5}',code) and re.fullmatch(r'\d{4}-\d{2}-\d{2}',day):
-                if all(v is not None and str(v).isdigit() and 0<=int(v)<=9 for v in nums):
-                    rows.append([code,day,*map(int,nums)])
+    items = []
+
+    if isinstance(data, dict):
+        if 'list' in data:
+            items=data['list']
+        elif isinstance(data.get('data'),dict):
+            items=data['data'].get('list',[])
+
+    for x in items:
+        code=str(x.get('code',''))
+        day=str(x.get('day',''))
+
+        nums=[
+            x.get('one'),
+            x.get('two'),
+            x.get('three'),
+            x.get('four'),
+            x.get('five'),
+            x.get('six'),
+            x.get('seven')
+        ]
+
+        if (
+            re.fullmatch(r'\d{5}',code)
+            and all(
+                v is not None 
+                and str(v).isdigit()
+                and 0<=int(v)<=9
+                for v in nums
+            )
+        ):
+            rows.append([
+                code,
+                day,
+                *map(int,nums)
+            ])
 
     rows.sort(key=lambda r:int(r[0]))
 
-    if len(rows)==0:
-        raise RuntimeError('备用数据源没有返回有效数据')
+    if not rows:
+        raise RuntimeError('备用接口没有返回7位数数据')
 
     return rows
 
