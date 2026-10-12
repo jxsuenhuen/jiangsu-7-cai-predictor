@@ -1,123 +1,146 @@
-import csv,json,urllib.parse,urllib.request,re,time,os
+import csv
+import re
+import urllib.request
+import os
 from html.parser import HTMLParser
 
-OFFICIAL='https://api.js-lottery.com/wfzq/seven/data'
-FALLBACK='https://api.huiniao.top/interface/home/lotteryHistory'
-OUT='history.csv'; LIMIT=500
+OUT = "history.csv"
 
-class TableParser(HTMLParser):
-    def __init__(self): super().__init__(); self.in_td=False; self.buf=[]; self.cells=[]
-    def handle_starttag(self,tag,attrs):
-        if tag in ('td','th'): self.in_td=True; self.buf=[]
-    def handle_endtag(self,tag):
-        if tag in ('td','th') and self.in_td:
-            self.cells.append(' '.join(''.join(self.buf).split())); self.in_td=False
+URL = "https://www.js-lottery.com/wfzq/seven"
+
+
+class Parser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.text=[]
+
     def handle_data(self,data):
-        if self.in_td: self.buf.append(data)
+        t=data.strip()
+        if t:
+            self.text.append(t)
+
 
 def fetch(url):
-    req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0','Cache-Control':'no-cache'})
-    with urllib.request.urlopen(req,timeout=30) as r: return r.read().decode('utf-8','replace')
-
-def official_latest():
-    html=fetch(OFFICIAL+'?t='+str(int(time.time())))
-    p=TableParser(); p.feed(html)
-    rows=[]
-    c=p.cells
-    for i in range(len(c)-8):
-        date,issue=c[i],c[i+1]
-        nums=c[i+2:i+9]
-        if re.fullmatch(r'\d{4}-\d{2}-\d{2}',date) and re.fullmatch(r'\d{5}',issue) and all(re.fullmatch(r'\d',x) for x in nums):
-            rows.append([issue,date,*map(int,nums)])
-    if not rows: raise RuntimeError('官方江苏体彩网历史数据页面未解析到有效7位数记录')
-    rows.sort(key=lambda r:int(r[0]))
-    return rows[-1]
-
-def fallback_full():
-    url = FALLBACK + '?' + urllib.parse.urlencode({
-        'type': 'jsqws',
-        'page': 1,
-        'limit': LIMIT
-    })
-
-    req = urllib.request.Request(
+    req=urllib.request.Request(
         url,
-        headers={'User-Agent':'Mozilla/5.0'}
+        headers={
+            "User-Agent":"Mozilla/5.0"
+        }
     )
 
-    with urllib.request.urlopen(req, timeout=30) as r:
-        obj = json.loads(r.read().decode('utf-8-sig','replace'))
+    with urllib.request.urlopen(req,timeout=30) as r:
+        return r.read().decode("utf-8","ignore")
 
-    rows=[]
 
-    data = obj.get('data',{})
+def get_latest():
 
-    items = []
+    html=fetch(URL)
 
-    if isinstance(data, dict):
-        if 'list' in data:
-            items=data['list']
-        elif isinstance(data.get('data'),dict):
-            items=data['data'].get('list',[])
+    p=Parser()
+    p.feed(html)
 
-    for x in items:
-        code=str(x.get('code',''))
-        day=str(x.get('day',''))
+    txt=" ".join(p.text)
 
-        nums=[
-            x.get('one'),
-            x.get('two'),
-            x.get('three'),
-            x.get('four'),
-            x.get('five'),
-            x.get('six'),
-            x.get('seven')
-        ]
+    # 找期号
+    issue=re.search(r'26\d{3}',txt)
 
-        if (
-            re.fullmatch(r'\d{5}',code)
-            and all(
-                v is not None 
-                and str(v).isdigit()
-                and 0<=int(v)<=9
-                for v in nums
-            )
-        ):
-            rows.append([
-                code,
-                day,
-                *map(int,nums)
-            ])
+    if not issue:
+        raise RuntimeError("没有找到最新期号")
 
-    rows.sort(key=lambda r:int(r[0]))
+    issue=issue.group()
 
-    if not rows:
-        raise RuntimeError('备用接口没有返回7位数数据')
+    # 找7个数字
+    nums=re.findall(r'(?<!\d)[0-9](?!\d)',txt)
 
-    return rows
+    if len(nums)<7:
+        raise RuntimeError("没有找到7位开奖号码")
+
+    nums=nums[-7:]
+
+    return [
+        issue,
+        "2026-10-12",
+        *map(int,nums)
+    ]
+
+
+def read():
+
+    if not os.path.exists(OUT):
+        return []
+
+    with open(
+        OUT,
+        encoding="utf-8-sig",
+        newline=""
+    ) as f:
+
+        return list(csv.reader(f))[1:]
+
 
 def write(rows):
-    rows=sorted({r[0]:r for r in rows}.values(),key=lambda r:int(r[0]))
-    with open(OUT,'w',newline='',encoding='utf-8-sig') as f:
-        w=csv.writer(f); w.writerow(['issue','date','d1','d2','d3','d4','d5','d6','d7']); w.writerows(rows)
-    print(f'OK {len(rows)} rows; latest={rows[-1][0]} {rows[-1][1]} {"".join(map(str,rows[-1][2:]))}')
+
+    rows=sorted(
+        rows,
+        key=lambda x:int(x[0])
+    )
+
+    with open(
+        OUT,
+        "w",
+        newline="",
+        encoding="utf-8-sig"
+    ) as f:
+
+        w=csv.writer(f)
+
+        w.writerow(
+            [
+                "issue",
+                "date",
+                "d1",
+                "d2",
+                "d3",
+                "d4",
+                "d5",
+                "d6",
+                "d7"
+            ]
+        )
+
+        w.writerows(rows)
+
 
 def main():
-    rows=read_rows()
 
-    if len(rows)<4748:
-       rows=fallback_full()
-        print('Seeded full history from fallback source.')
+    rows=read()
 
-    # 使用备用接口获取最新数据
-    latest_rows=fallback_full()
-    latest=latest_rows[-1]
+    latest=get_latest()
 
-    if not rows or int(latest[0])>int(rows[-1][0]):
-        rows.append(latest)
-        print('Latest appended:', latest)
+    exist=False
 
-    elif int(latest[0])==int(rows[-1][0]):
-        print('Already latest:', latest)
+    for r in rows:
+        if r[0]==latest[0]:
+            exist=True
+
+    if not exist:
+        rows.append(
+            list(map(str,latest))
+        )
+
+        print(
+            "新增:",
+            latest
+        )
+
+    else:
+        print(
+            "已有:",
+            latest[0]
+        )
 
     write(rows)
+
+
+if __name__=="__main__":
+    main()
