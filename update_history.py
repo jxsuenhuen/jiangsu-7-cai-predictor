@@ -12,59 +12,72 @@ URL = "https://www.js-lottery.com/wfzq/seven"
 class Parser(HTMLParser):
     def __init__(self):
         super().__init__()
-        self.text=[]
+        self.data = []
 
-    def handle_data(self,data):
-        t=data.strip()
+    def handle_data(self, data):
+        t = data.strip()
         if t:
-            self.text.append(t)
+            self.data.append(t)
 
 
 def fetch(url):
-    req=urllib.request.Request(
+    req = urllib.request.Request(
         url,
         headers={
-            "User-Agent":"Mozilla/5.0"
+            "User-Agent": "Mozilla/5.0"
         }
     )
 
-    with urllib.request.urlopen(req,timeout=30) as r:
-        return r.read().decode("utf-8","ignore")
+    with urllib.request.urlopen(req, timeout=30) as r:
+        return r.read().decode("utf-8", "ignore")
 
 
 def get_latest():
 
-    html=fetch(URL)
+    html = fetch(URL)
 
-    p=Parser()
+    p = Parser()
     p.feed(html)
 
-    txt=" ".join(p.text)
+    text = "\n".join(p.data)
 
-    # 找期号
-    issue=re.search(r'26\d{3}',txt)
+    # 只寻找开奖公告格式：
+    # 26155
+    # 开奖号码
+    # 1 1 1 7 2 5 2
 
-    if not issue:
-        raise RuntimeError("没有找到最新期号")
+    match = re.search(
+        r'(261\d{2}).{0,200}?'
+        r'([0-9])\s+([0-9])\s+([0-9])\s+'
+        r'([0-9])\s+([0-9])\s+([0-9])\s+([0-9])',
+        text,
+        re.S
+    )
 
-    issue=issue.group()
+    if not match:
+        raise RuntimeError("未找到有效7位数开奖")
 
-    # 找7个数字
-    nums=re.findall(r'(?<!\d)[0-9](?!\d)',txt)
+    issue = match.group(1)
 
-    if len(nums)<7:
-        raise RuntimeError("没有找到7位开奖号码")
+    nums = [
+        int(match.group(i))
+        for i in range(2,9)
+    ]
 
-    nums=nums[-7:]
+    # 防止抓错期号
+    if not issue.startswith("261"):
+        raise RuntimeError(
+            f"错误期号:{issue}"
+        )
 
     return [
         issue,
         "2026-10-12",
-        *map(int,nums)
+        *nums
     ]
 
 
-def read():
+def read_history():
 
     if not os.path.exists(OUT):
         return []
@@ -78,9 +91,9 @@ def read():
         return list(csv.reader(f))[1:]
 
 
-def write(rows):
+def save(rows):
 
-    rows=sorted(
+    rows = sorted(
         rows,
         key=lambda x:int(x[0])
     )
@@ -92,40 +105,39 @@ def write(rows):
         encoding="utf-8-sig"
     ) as f:
 
-        w=csv.writer(f)
+        w = csv.writer(f)
 
-        w.writerow(
-            [
-                "issue",
-                "date",
-                "d1",
-                "d2",
-                "d3",
-                "d4",
-                "d5",
-                "d6",
-                "d7"
-            ]
-        )
+        w.writerow([
+            "issue",
+            "date",
+            "d1",
+            "d2",
+            "d3",
+            "d4",
+            "d5",
+            "d6",
+            "d7"
+        ])
 
         w.writerows(rows)
 
 
 def main():
 
-    rows=read()
+    rows = read_history()
 
-    latest=get_latest()
+    latest = get_latest()
 
-    exist=False
+    exists = False
 
     for r in rows:
-        if r[0]==latest[0]:
-            exist=True
+        if r[0] == latest[0]:
+            exists = True
 
-    if not exist:
+    if not exists:
+
         rows.append(
-            list(map(str,latest))
+            list(map(str, latest))
         )
 
         print(
@@ -134,13 +146,20 @@ def main():
         )
 
     else:
+
         print(
             "已有:",
-            latest[0]
+            latest
         )
 
-    write(rows)
+
+    save(rows)
+
+    print(
+        "完成，最新期:",
+        latest[0]
+    )
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     main()
