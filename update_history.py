@@ -175,28 +175,28 @@ def main():
     rows = read_history()
 
 
-# 第一次运行，初始化历史
-if len(rows)<100:
+    # 第一次运行，初始化历史
+    if len(rows) < 100:
 
-    print("开始下载历史数据")
+        print("开始下载历史数据")
 
-    rows=get_history()
+        rows = get_history()
 
-    print(
-        "历史数量:",
-        len(rows)
-    )
+        print(
+            "历史数量:",
+            len(rows)
+        )
 
 
-latest=get_latest()
+    latest = get_latest()
 
-     
 
     exists = False
 
     for r in rows:
         if r[0] == latest[0]:
             exists = True
+
 
     if not exists:
 
@@ -218,6 +218,7 @@ latest=get_latest()
 
 
     save(rows)
+
 
     print(
         "完成，最新期:",
