@@ -6,6 +6,7 @@ let baseHistory = [];
 let history = [];
 let predictions = [];
 let currentPrediction = null;
+let dataLoading = false;
 
 // ================================
 // 期号统一规则：必须严格为5位数字
@@ -100,6 +101,8 @@ function nextIssue() {
 function nowLabel() { return new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'}); }
 
 async function loadData() {
+  if (dataLoading) return;
+  dataLoading = true;
   setStatus('正在加载');
   try {
     const response = await fetch(BASE_URL + '&t=' + Date.now(), { cache: 'no-store' });
@@ -137,7 +140,7 @@ async function loadData() {
     setStatus('数据加载失败');
     document.getElementById('dataSummary').textContent = '无法加载历史数据，请刷新页面';
     document.getElementById('mainMeta').textContent = err.message || '请检查网络连接';
-  }
+  } finally { dataLoading = false; }
 }
 
 function mergeHistory(...lists) {
@@ -549,3 +552,7 @@ async function loadSourceStatus(){
  document.getElementById('sourceStatus').textContent=`官网核验号码 ${s.official_count} 期（${s.official_first}—${s.official_last}）；旧版未核验 ${s.legacy_count} 期。检查时间：${new Date(s.checked_at).toLocaleString('zh-CN',{timeZone:'Asia/Shanghai'})}（北京时间）。${s.note}`;
  } catch {document.getElementById('sourceStatus').textContent='无法读取同步状态，请检查网络或 GitHub Actions。'}
 }
+
+// Refresh when returning to the app, and while it remains open.
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')loadData();});
+setInterval(()=>{if(document.visibilityState==='visible')loadData();},5*60*1000);
