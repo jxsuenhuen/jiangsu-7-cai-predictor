@@ -1,0 +1,10 @@
+{
+  "checked_at": "2026-11-08T05:29:41.382977+00:00",
+  "official_count": 4767,
+  "official_first": "03060",
+  "official_last": "26170",
+  "legacy_count": 346,
+  "download_url": "https://api.js-lottery.com/lottery/downSevenData",
+  "page_url": "https://api.js-lottery.com/wfzq/seven/data",
+  "note": "官方号码下载不含日期；较早日期沿用旧版，未逐期核验。早于官方下载范围的记录保留并标为旧版来源。"
+}

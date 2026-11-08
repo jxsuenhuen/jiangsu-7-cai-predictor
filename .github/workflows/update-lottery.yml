@@ -1,102 +1,41 @@
-name: Update Jiangsu 7 Lottery
-
-
+name: Sync official history and deploy
 on:
-
   schedule:
-
-    - cron: "0 14 * * *"
-
-
+    - cron: '17 * * * *'
   workflow_dispatch:
-
-
-
 permissions:
-
   contents: write
-
-
-
+  pages: write
+  id-token: write
+concurrency:
+  group: seven-pages
+  cancel-in-progress: false
 jobs:
-
   update:
-
-
     runs-on: ubuntu-latest
-
-
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-
-
-      - name: Checkout
-
-        uses: actions/checkout@v4
-
-
-
-      - name: Install Python
-
-        uses: actions/setup-python@v5
-
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-
-          python-version: "3.x"
-
-
-
-      - name: Update lottery data
-
+          python-version: '3.12'
+      - run: python update_history.py
+      - run: python -m unittest discover -s tests
+      - name: Commit verified snapshot
         run: |
-
-          python update_history.py
-
-
-
-      # 检查生成结果
-
-      - name: Check history.csv
-
-        run: |
-
-          echo "检查 history.csv"
-
-          wc -l history.csv
-
-          echo "前5行"
-
-          head -5 history.csv
-
-          echo "后5行"
-
-          tail -5 history.csv
-
-
-
-      # 提交更新
-
-      - name: Commit update
-
-
-        run: |
-
-
-          git config --global user.name "github-actions"
-
-          git config --global user.email "github-actions@github.com"
-
-
-
-          git add history.csv
-
-
-
-          git status
-
-
-
-          git commit -m "auto update lottery data" || echo "没有变化"
-
-
-
-          git push
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add history.csv data-status.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Sync official Jiangsu seven-digit history"
+            git push
+          fi
+      - run: python build.py
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - id: deployment
+        uses: actions/deploy-pages@v4

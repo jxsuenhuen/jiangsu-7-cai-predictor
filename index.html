@@ -7,21 +7,21 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="7位预测" />
-<link rel="manifest" href="manifest.webmanifest?v=9" />
+<link rel="manifest" href="manifest.webmanifest?v=10" />
 <link rel="apple-touch-icon" href="icon-192.png" />
-<link rel="stylesheet" href="styles.css?v=9" />
-<title>江苏7位号码预测 V9</title>
+<link rel="stylesheet" href="styles.css?v=10" />
+<title>江苏7位号码预测 V10</title>
 </head>
 <body>
 <main class="app-shell">
-<header class="hero"><div><div class="eyebrow">JIANGSU 7-DIGIT · V9</div><h1>7位号码预测</h1><p id="dataSummary">正在加载历史数据…</p></div><div class="status-pill" id="statusPill">加载中</div></header>
-<section class="card primary-card"><div class="section-label">下一期统计候选</div><div class="main-number" id="mainNumber">--------</div><div class="subtext" id="mainMeta">点击预测开始计算</div><button id="predictBtn" class="primary-btn" type="button">预测下一期</button><div class="tap-hint">预测记录保存在当前设备；开奖历史由 GitHub 的 history.csv 统一提供。</div></section>
+<header class="hero"><div><div class="eyebrow">JIANGSU 7-DIGIT · V10</div><h1>7位号码预测</h1><p id="dataSummary">正在加载历史数据…</p></div><div class="status-pill" id="statusPill">加载中</div></header>
+<section class="card"><div class="card-title">官网数据同步</div><p id="sourceStatus" class="hint" role="status">正在检查来源…</p><button id="refreshData" class="ghost-btn">刷新开奖数据</button><p class="hint"><a href="https://api.js-lottery.com/wfzq/seven" target="_blank" rel="noopener">查看江苏体彩官网</a> · 每小时同步；官网不可用时保留上次成功数据。</p></section><section class="card primary-card"><div class="section-label">下一期统计候选</div><div class="main-number" id="mainNumber">--------</div><div class="subtext" id="mainMeta">点击预测开始计算</div><button id="predictBtn" class="primary-btn" type="button">预测下一期</button><div class="tap-hint">预测记录保存在当前设备；开奖历史由 GitHub 的 history.csv 统一提供。</div></section>
 <section class="card"><div class="card-title">Top 10 候选</div><div id="top10" class="top-list"></div></section>
-<section class="card"><div class="card-title">每一位 0–9 概率</div><p class="hint">每一位显示模型对 0–9 的统计概率，单行合计约 100%。</p><div id="probabilities" class="prob-table"></div></section>
+<section class="card"><div class="card-title">每一位 0–9 统计权重</div><p class="hint">每一位显示模型对 0–9 的历史统计权重（非真实中奖概率），单行合计约 100%。</p><div id="probabilities" class="prob-table"></div></section>
 <section class="card"><div class="card-title">录入最新开奖结果</div><p class="hint">仅用于临时本机录入；正式共享历史由 GitHub Actions 自动更新。</p><div class="input-row"><input id="issueInput" inputmode="numeric" maxlength="5" pattern="[0-9]{5}" placeholder="期号，例如 26152" /><input id="dateInput" type="date" /></div><div class="number-inputs" id="numberInputs"></div><button id="saveBtn" class="secondary-btn" type="button">保存开奖结果并更新模型</button><div class="message" id="saveMessage"></div></section>
 <section class="card"><div class="card-title">真实预测回测</div><p class="hint">只统计实际点击“预测下一期”后形成的预测；对应开奖数据出现后自动结算。</p><div class="metrics" id="metrics"></div><div id="hitDistribution" class="distribution"></div><div id="recentSettled" class="recent-list"></div><p class="warning">彩票开奖若为独立随机过程，历史数据通常不能稳定预测下一期。本工具仅用于统计实验与模型回测。</p></section>
-<section class="card small-card"><div class="card-title">数据管理</div><div class="data-actions"><button id="exportHistoryBtn" class="ghost-btn" type="button">导出历史 CSV</button><button id="exportPredBtn" class="ghost-btn" type="button">导出预测记录</button></div></section>
-<footer>V9：开奖历史统一读取 GitHub history.csv；Windows 与 iPhone 打开同一网址即可看到同一份最新开奖历史。</footer>
+<section class="card"><div class="card-title">历史开奖记录</div><input id="searchHistory" type="search" placeholder="搜索期号、日期、7位号码" aria-label="搜索历史开奖记录"><p id="historyCount" class="hint"></p><div class="table-scroll"><table><thead><tr><th>期号</th><th>日期</th><th>号码</th><th>来源</th></tr></thead><tbody id="historyRows"></tbody></table></div></section><section class="card small-card"><div class="card-title">数据管理</div><div class="data-actions"><button id="exportHistoryBtn" class="ghost-btn" type="button">导出历史 CSV</button><button id="exportPredBtn" class="ghost-btn" type="button">导出预测记录</button></div></section>
+<section class="card"><div class="card-title">安装到 Windows / iPhone</div><p class="hint">Windows：用 Edge 或 Chrome 打开本站，从浏览器菜单选择“安装此站点为应用”。iPhone：用 Safari 打开本站，点分享 → 添加到主屏幕 → 添加。首次联网打开后可离线查看已缓存页面和开奖数据。预测记录仅保存在当前设备，不会跨设备同步。</p><p class="warning">预测为历史统计实验，无法可靠预测随机开奖，不代表中奖概率提高。预计开奖日期可能受休市影响，以官方公告为准。</p></section><footer>V10：开奖历史统一读取 GitHub history.csv；Windows 与 iPhone 打开同一网址即可看到同一份最新开奖历史。</footer>
 </main>
-<script src="app.js?v=9"></script>
+<script src="app.js?v=10"></script>
 </body></html>
